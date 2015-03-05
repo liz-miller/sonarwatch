@@ -34,9 +34,9 @@ const int vib1 = 2;
 long inches, pulse;
 
 //set ranges for reactions
-int minReading = 9;
+int minReading = 6;
 int middleReading = 12;
-int maxReading = 15;
+int maxReading = 18;
 int setDelay = 0;
 
  /*setup
@@ -80,31 +80,44 @@ void dualVibration(const int motor1, const int motor2, int setDelay){
   delay(setDelay);
 }
 
+/*printDist
+ *Input: none
+ *Output: none
+ *Description: used to print data to serial monitor
+ */ 
+ void printDist(){
+    Serial.print(inches);
+    Serial.print(" inches ");
+    Serial.print(setDelay);
+    Serial.println(" msec");
+ }
+ 
 /*readSonar
  * Input: sonar name
- * Output: distance measure in inches
+ * Output: none
  * Description: reads the pulse from the sonar sensor 
  */
- long readSonar(const int sonarPin){
-   int setDelay = 0;
+ void readSonar(const int sonarPin){
   //read the pulse from the sonar
   pulse = pulseIn(sonarPin, HIGH);
   //conversion factor 147uS per inch
   inches = pulse/147;
   delay(500);
-  return inches;
-  
+ 
   if(inches <= minReading){
     setDelay = 250;
     singleVibration(vib1, setDelay);
+    printDist();
   }
   if(inches > minReading && inches <= middleReading){
      setDelay = 750;
      singleVibration(vib1, setDelay);
+     printDist();
   }
   if(inches > middleReading && inches <= maxReading){
      setDelay = 1000;
-      singleVibration(vib1, setDelay);
+     singleVibration(vib1, setDelay);
+     printDist();
   }
   //if inches is > maxReading, do nothing
  }
